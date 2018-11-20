@@ -1,0 +1,10 @@
+^\.Rproj\.user$
+.covrignore
+cran-comments.md
+^.*\.xml$
+^.*\.yml$
+/^\.git/
+^.*\.Rproj$
+man-roxygen
+data-raw
+/^src\-/

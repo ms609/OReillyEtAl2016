@@ -1,0 +1,14 @@
+{
+    "description": "Results generated from O'Reilly et al. (2016)",
+    "license": "unlimited",
+    "title": "OReillyEtAl2016",
+    "version": "v1.0.0",
+    "upload_type": "software",
+    "creators": [
+        {
+            "affiliation": "Department of Earth Sciences, Durham University",
+            "name": "Martin R. Smith",
+            "orcid": "0000-0001-5660-1727"
+        }
+    ]
+}
