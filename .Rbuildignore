@@ -1,6 +1,9 @@
 ^\.Rproj\.user$
 .covrignore
 cran-comments.md
+^.*\.dll$
+^.*\.json$
+^.*\.o$
 ^.*\.xml$
 ^.*\.yml$
 /^\.git/
