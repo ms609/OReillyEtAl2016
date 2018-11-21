@@ -9,7 +9,8 @@ charNos <- c(100, 350, 1000); paramNos <- 1:100; repNos <- 1:10
 fileNo <- vapply(charNos, function (A) vapply(paramNos, function (B) vapply(repNos, function (C)
           paste0(A, '_', B, '_', C), '__'), character(length(repNos))), matrix('A',
           length(repNos), length(paramNos)))
-mkSuboptimalValues <- seq(1, 0.5, length.out=21)
+mkSuboptimalValues <- seq(0.5, 1, length.out=21)
+names(mkSuboptimalValues) <- paste0('consensus_', mkSuboptimalValues)
 
 for (iFileNo in fileNo) {
   consFile <- paste0(path, 'mbCons/', iFileNo, '.con.nex')
