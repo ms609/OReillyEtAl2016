@@ -1,29 +1,31 @@
-library('ProfileParsimony')
+#library('ProfileParsimony')
 path <- 'C:/Research/iw/'
-path <- 'C:/Work/Fun/implied_weight/oreilly/'## DELETE
-bayes.path <- 'C:/Bayes64/iwor/'
+bayesPath <- 'C:/Bayes64/DELETE_iwor/'
+ReadNexus <- ape::read.nexus
+WriteNexus <- ape::write.nexus
+Consensus <- ape::consensus
 
-charnos <- c(100, 350, 1000); paramnos <- 1:100; repnos <- 1:9 # TODO 1:10 once bayes runs complete.
-fileno <- vapply(charnos, function (A) vapply(paramnos, function (B) vapply(repnos, function (C)
-          paste0(A, '_', B, '_', C), '__'), character(length(repnos))), matrix('A',
-          length(repnos), length(paramnos)))
-mk.suboptimal.values <- seq(1, 0.5, length.out=20)
+charNos <- c(100, 350, 1000); paramNos <- 1:100; repNos <- 1:10
+fileNo <- vapply(charNos, function (A) vapply(paramNos, function (B) vapply(repNos, function (C)
+          paste0(A, '_', B, '_', C), '__'), character(length(repNos))), matrix('A',
+          length(repNos), length(paramNos)))
+mkSuboptimalValues <- seq(1, 0.5, length.out=21)
 
-for (ifileno in fileno) {
-  cons.file <- paste0(path, 'mbCons/', ifileno, '.con.nex')
-  if (TRUE || !file.exists(cons.file)) {  # TODO remove "True"
-    fileroot <- paste0(bayes.path, 'nexTrees/', ifileno, '.mb.nex.run')
-    cat("\n - Processing ", fileroot, '*.nex', sep='')
-    if (file.exists(paste0(fileroot, '1.nex')) & file.exists(paste0(fileroot, '2.nex'))) {
-      run1 <- read.nexus(paste0(fileroot, '1.nex'))
+for (iFileNo in fileNo) {
+  consFile <- paste0(path, 'mbCons/', iFileNo, '.con.nex')
+  if (!file.exists(consFile)) {
+    fileRoot <- paste0(bayesPath, 'nexTrees/', iFileNo, '.mb.nex.run')
+    cat("\n - Processing ", fileRoot, '*.nex', sep='')
+    if (file.exists(paste0(fileRoot, '1.nex')) & file.exists(paste0(fileRoot, '2.nex'))) {
+      run1 <- ReadNexus(paste0(fileRoot, '1.nex'))
       cat("\n   - Reading")
-      run2 <- read.nexus(paste0(fileroot, '2.nex'))
+      run2 <- ReadNexus(paste0(fileRoot, '2.nex'))
       cat(" - calculating consensus")
-      cons <- lapply(mk.suboptimal.values, function (so) consensus(c(run1, run2), p=so, check.labels=TRUE))
-      cat("\n   - Saving:", vapply(cons, function (x) x$Nnode, double(1)), "nodes\n   - Saved to", cons.file)
-      write.nexus(cons, file=cons.file)
+      cons <- lapply(mkSuboptimalValues, function (so) Consensus(c(run1, run2), p=so, check.labels=TRUE))
+      cat("\n   - Saving:", vapply(cons, function (x) x$Nnode, double(1)), "nodes\n   - Saved to", consFile)
+      WriteNexus(cons, file=consFile)
     } else {
-      cat("\n   ! No results yet at", ifileno)
+      cat("\n   ! No results yet at", iFileNo)
     }
   }
 }
