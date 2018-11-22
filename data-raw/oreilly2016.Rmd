@@ -59,18 +59,25 @@ BLANK_SPLITS <- array(NA, c(21, 6, length(FILE_NUMS)),
                                     FILE_NUMS))
 ALL_BLANK_S <- lapply(ANALYSES, function(x) BLANK_SPLITS)
 names(ALL_BLANK_S) <- ANALYSES
-orPartitions <- list('100'=ALL_BLANK_S, '350'=ALL_BLANK_S, '1000'=ALL_BLANK_S)
+
+
 
 BLANK_QUARTS <- array(NA, c(21, 6, length(FILE_NUMS)),
                       dimnames=list(NULL, c( "Q",  "s", "d", "r1", "r2", "u"),
                                     FILE_NUMS))
 ALL_BLANK_Q <- lapply(ANALYSES, function(x) BLANK_QUARTS)
 names(ALL_BLANK_Q) <- ANALYSES
-orQuartets <- list('100'=ALL_BLANK_Q, '350'=ALL_BLANK_Q, '1000'=ALL_BLANK_Q)
-
 THESE_FILE_NUMS <- as.character(vapply(DATASET_NUMS, paste0, 
                                        character(length(REPL_NUMS)), '_', REPL_NUMS))
 
+# Create empty data objects as placeholders in first instance
+if (!file.exists('data/orQuartets.rda')) {
+  # Don't overwrite existing data!
+  orPartitions <- list('100'=ALL_BLANK_S, '350'=ALL_BLANK_S, '1000'=ALL_BLANK_S)
+  orQuartets <- list('100'=ALL_BLANK_Q, '350'=ALL_BLANK_Q, '1000'=ALL_BLANK_Q)
+  usethis::use_data(orQuartets, orPartitions, overwrite=FALSE)
+  remove("orQuartets", "orPartitions")
+}
 
 # Helper function to load suboptimal trees
 LoadSuboptimal <- function (fileNums, pref) {
@@ -91,12 +98,17 @@ LoadSuboptimal <- function (fileNums, pref) {
 ### Load trees, calcuate and save statistics
 
 This uses the `usethis` package (which you'll need to install using 
-`install.packages('usethis')` if you haven't already) to package the data 
+`install.packages('usethis')` if you haven't already) to include the data 
 with the package.
 
 ```{R calculate-statistics}
-for (NCHAR in c(100, 350, 1000)) {
-  if ()
+NCHAR_VALUES <- c('100', '350', '1000')
+data("orQuartets")
+data("orPartitions")
+NCHAR_NEEDED <- vapply(NCHAR_VALUES, function (NCHAR)
+  all(is.na(orQuartets[[NCHAR]][['impliedC']][21, 'Q', ])), logical(1))
+for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
+  
   for (NUM in THESE_FILE_NUMS) {
     if (!file.exists(sprintf(TREE_FILE, 'mk', NCHAR, NUM, ''))
         && all(file.exists(sprintf(BAYES_TREE, NCHAR, NUM, seq_len(N_BAYES_RUNS)))))

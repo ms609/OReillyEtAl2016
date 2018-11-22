@@ -39,3 +39,4 @@ rsconnect/
 
 # FOR NOW: data-raw
 data-raw/trees/
+.Rprofile
