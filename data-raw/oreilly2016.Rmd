@@ -71,7 +71,7 @@ THESE_FILE_NUMS <- as.character(vapply(DATASET_NUMS, paste0,
                                        character(length(REPL_NUMS)), '_', REPL_NUMS))
 
 # Create empty data objects as placeholders in first instance
-if (!file.exists('data/orQuartets.rda')) {
+if (!any(file.exists(paste0(c('..', '.'), '/data/orQuartets.rda')))) {
   # Don't overwrite existing data!
   orPartitions <- list('100'=ALL_BLANK_S, '350'=ALL_BLANK_S, '1000'=ALL_BLANK_S)
   orQuartets <- list('100'=ALL_BLANK_Q, '350'=ALL_BLANK_Q, '1000'=ALL_BLANK_Q)
