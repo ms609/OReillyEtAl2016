@@ -58,7 +58,7 @@ Before running the script, you'll need an installation of Perl.  [Strawberry Per
 
 Then:
 
-*	Create a local directory (default: `C:/Research/oreilly`) with three subdirectories entitled `tntscript`, `S1-TNT`, and `Trees`.  Then, within the new `Trees` directory, 
+*	Create a local directory (default: `C:/Research/oreilly`) with two subdirectories entitled `Matrices`, and `Trees`.  Then, within the new `Trees` directory, 
 create the further subdirectories `eq.100`, `eq.350`, `eq.1000`, 
 `k2.100` (and `.350`, `.1000`), and so forth for `k3`, `k5`, `k10`, `k20`
 and `k200`.
@@ -67,7 +67,7 @@ and `k200`.
 HOME <- "C:/Research/oreilly" # Must not end in a trailing '/'
 INST_ROOT <- "https://raw.githubusercontent.com/ms609/OReillyEtAl2016/master/inst/"
 N_CHAR <- c(100, 350, 1000)
-sapply(paste0(HOME, '/', c('', 'tntscript', 'Matrices', 'Trees')), dir.create)
+sapply(paste0(HOME, '/', c('', 'Matrices', 'Trees')), dir.create)
 sapply(N_CHAR, function (nChar) 
   sapply(paste0(HOME, '/Trees/', 
                 c('eq', 'k2', 'k3', 'k5', 'k10', 'k20', 'k200'),
@@ -96,7 +96,7 @@ mptgenPath <-  paste0(HOME, '/mptgen.pl')
 
 download.file(paste0(INST_ROOT, "analysis-parsimony/tnt2nex.pl"), tnt2nexPath)
 tnt2nex <- readLines(tnt2nexPath)
-tnt2nex[3] <- paste0('$dir = "', HOME, '/Trees";')
+tnt2nex[3] <- paste0('$dir = "', HOME, '";')
 writeLines(tnt2nex, tnt2nexPath)
 
 download.file(paste0(INST_ROOT, "analysis-parsimony/mptgen.pl"), mptgenPath)
@@ -108,16 +108,19 @@ writeLines(mptgen, mptgenPath)
 *	Copy the file `template.run` into the tntscript subdirectory.
 
 ```{r eval=FALSE}
-download.file(paste0(INST_ROOT, "analysis-parsimony/template.run"), 
-              paste0(HOME, '/tntscript/template.run'))
+download.file(paste0(INST_ROOT, "analysis-parsimony/tnt_template.run"), 
+              paste0(HOME, '/tnt_template.run'))
 ```
 
-*	Download Appendix S1 from Congreve and Lamsdell [-@Congreve2016dd]  (doi:[10.5061/dryad.7dq0j/1](https://dx.doi.org/10.5061/dryad.7dq0j/1)) and unzip its 100 text files to `Matrices`.
+*	Download the matrices from O'Reilly _et al_. [-@OReilly2016dd]  (doi:[10.5061/dryad.10qf3/5](https://dx.doi.org/10.5061/dryad.10qf3)) and unzip
+its three folders to the `Matrices` directory.
 
 ```{r eval=FALSE}
 tempFile <- tempfile(fileext='.zip')
-download.file("https://datadryad.org/bitstream/handle/10255/dryad.101095/S1%20-%20TNT%20files.zip", tempFile)
+download.file("https://datadryad.org/bitstream/handle/10255/dryad.112089/oreilly2016matrices.zip", tempFile)
 unzip(tempFile, exdir=paste0(HOME, '/Matrices'))
+## Optionally: 
+file.remove(tempFile)
 ```
 
 * Perform the analyses by executing `mptgen.pl`. (Once Perl is installed,
