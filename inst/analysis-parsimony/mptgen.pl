@@ -27,10 +27,13 @@ foreach my $rep (1..10) {
           print SCRIPT $line;
         }
         close SCRIPT;
-        system("tnt_cmd \"proc $scriptfile\";"); # tnt_cmd is a copy of the COMMAND LINE version of tnt
+        system("tnt \"proc $scriptfile\";"); # tnt_cmd is a copy of the COMMAND LINE version of tnt
         unlink($scriptfile);
-        # To run TNT using the system command it is necessary (in Windows) to add its containing 
-        # folder to the System Path, under 'Environment Variables'
+        # To run TNT using the system command it is necessary (in Windows) to add its 
+        # containing folder to the System Path, under 'Environment Variables',
+        # or to include a copy of the executable in the same folder as mptgen.pl
+        
+        # I recommend using the command-line version of the program with this script.
       }
     }
   }
