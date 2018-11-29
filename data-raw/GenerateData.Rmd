@@ -9,7 +9,7 @@ output: html_document
 Before running this file, convert MrBayes output into R-readable output in 
 nexTrees folder using `t2nex.pl`
 
-## Initialize variables
+## Getting things ready
 
 Before loading trees, R needs to know where abouts on the computer files are stored.
 
@@ -19,11 +19,12 @@ in which the package is installed -- great, no further work is required.
 Otherwise you might need to run `setwd("C:/path/to/OReillyEtAl2016/data-raw")`,
 substituting in the necessary path on your machine.
 
-```{R Initialize-variables}
+Data are saved to the package using the `usedata` package, which you'll need to
+install using `install.packages('usethis')` if you haven't already.
 
-library(OReillyEtAl2016)
+```{R Initialize}
 # Load the tree used to generate the simulated data matrices
-data('orReferenceTree')
+referenceTree <- OReillyEtAl2016::orReferenceTree
 
 # Tree files are located in the data-raw subdirectory
 DIR_ROOT = '../data-raw/trees/'
@@ -41,7 +42,9 @@ SO_NUMS <- formatC(1:20, width=2, format='d', flag='0') # Enumeration of subopti
 TREE_FILE <- paste0(DIR_ROOT, '%s.%s/R%s%s.con.nex') # Defines the pattern of the file name
 BAYES_TREE <- paste0(DIR_ROOT, 'MrBayes/%s_%s.mb.nex.run%s.nex')
 CI_PATH <- paste0(DIR_ROOT, 'consistency_indices.txt')
-BAYES_SUBOPTIMAL <- seq(1, 0.5, length.out = 21)
+SUBOPTIMAL <- list(
+  mk = seq(1, 0.5, length.out = 21)
+)
 
 ReadNexus <- ape::read.nexus
 WriteNexus <- ape::write.nexus
@@ -188,11 +191,11 @@ for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
     cat("Quartets...")
     orQuartets[[as.character(NCHAR)]][[analysis]] <-
       vapply(theseTrees, Quartet::QuartetStatus, 0L * BLANK_QUARTS[, , 1], 
-             cf = orReferenceTree)
+             cf = referenceTree)
     cat(" Done. Partitions...")
     orPartitions[[as.character(NCHAR)]][[analysis]] <- 
       vapply(theseTrees, Quartet::SplitStatus, 0 * BLANK_SPLITS[, , 1],
-             cf=orReferenceTree)
+             cf=referenceTree)
     cat(" Done.\n")
   }
   remove(reconstructedTrees)

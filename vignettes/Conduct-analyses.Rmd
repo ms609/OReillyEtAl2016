@@ -1,0 +1,125 @@
+---
+title: "AnalysingO'Reilly _et al_. matrices"
+author: "Martin R. Smith <martin.smith@durham.ac.uk>"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::pdf_document2:
+    toc: yes
+    includes:
+      in_header: ../inst/preamble.tex
+bibliography: ../inst/REFERENCES.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/dependent/biology-letters.csl
+link-citations: yes
+github-repo: ms609/Quartet
+vignette: >
+  %\VignetteIndexEntry{Data analysis protocol}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The files required to reproduce these analyses are included in the R
+package directory on installation, and can be downloaded from [Github](https://github.com/ms609/OReillyEtAl2016/tree/master/inst).
+
+If you have [RStudio](https://www.rstudio.com/), you can open the R Markdown
+file used to generate this document (`vignettes/Conduct-analyses.Rmd`) to run the
+R scripts that will copy all necessary files and begin analyses on your 
+behalf.
+
+## Bayesian analysis
+
+###bayesgen.pl — Generate MrBayes files
+
+A Perl script to execute analysis using Markov models in MrBayes.
+
+The script reads the datasets of O'Reilly _et al_. [-@OReilly2016], appends a MrBayes block to the Nexus files, and executes a MrBayes run, saving the consensus trees and preparing them for analysis in R.
+
+Before running the script:
+
+*	Install MrBayes (mrbayes.sourceforge.net)
+
+*	Download the matrices from O'Reilly _et al_. 2016 [-@OReilly2016dd] 
+(doi:[10.5061/dryad.10qf3/5](https://dx.doi.org/10.5061/dryad.10qf3)) and unzip 
+its nexus files to a local directory (default: C:/Bayes64/iw) 
+
+*	Copy `mrbayesblock.nex` to the same directory
+
+*	Modify file to specify path to MrBayes (default: `C:/Bayes64/MrBayes/mrbayes_x64.exe`) and path to extracted matrices (default: `C:/Bayes64/iw`)
+
+## Parsimony analysis
+
+###mptgen.pl — Generate parsimony trees in TNT
+
+A Perl script to generate most parsimonious trees by parsimony search in TNT.
+
+The script generates TNT scripts to perform parsimony analysis on each of the O_Reilly _et al_. datasets, under equal and implied weights, with and without suboptimal trees.
+It then executes these scripts and converts the output into a format suitable for analysis in R.
+
+Before running the script, you'll need an installation of Perl.  [Strawberry Perl](http://strawberryperl.com/) works on MS Windows.
+
+Then:
+
+*	Create a local directory (default: `C:/Research/oreilly`) with three subdirectories entitled `tntscript`, `S1-TNT`, and `Trees`.  Then, within the new `Trees` directory, 
+create the further subdirectories `eq.100`, `eq.350`, `eq.1000`, 
+`k2.100` (and `.350`, `.1000`), and so forth for `k3`, `k5`, `k10`, `k20`
+and `k200`.
+
+```{r eval=FALSE}
+HOME <- "C:/Research/oreilly" # Must not end in a trailing '/'
+INST_ROOT <- "https://raw.githubusercontent.com/ms609/OReillyEtAl2016/master/inst/"
+N_CHAR <- c(100, 350, 1000)
+sapply(paste0(HOME, '/', c('', 'tntscript', 'Matrices', 'Trees')), dir.create)
+sapply(N_CHAR, function (nChar) 
+  sapply(paste0(HOME, '/Trees/', 
+                c('eq', 'k2', 'k3', 'k5', 'k10', 'k20', 'k200'),
+                '.', nChar), dir.create))
+```
+
+*	[Install TNT](http://www.lillo.org.ar/phylogeny/tnt/).
+
+```{r eval=FALSE, message=FALSE}
+zipFile <- paste0(HOME, '/TNT.ZIP')
+# This is the Windows path; use the appropriate path for your operating system
+#download.file("http://www.lillo.org.ar/phylogeny/tnt/tnt-win-no-tax-limit.zip", tempFile)
+download.file("http://www.lillo.org.ar/phylogeny/tnt/ZIPCHTNT.ZIP", 
+              destfile=zipFile, method='auto', mode='wb')
+unzip(zipFile, 'tnt.exe', exdir=HOME)
+file.remove(zipFile)
+```
+
+*	Copy `mptgen.pl` and (optinally) `tnt2nex.pl` into this root directory, updating each file so its variable $dir corresponds to the appropriate path.  
+`tnt2nex.pl` translates TNT output into NEXUS format and may be useful if you 
+wish to perform further analysis of TNT output.  This will be performed
+automatically if you uncomment the final line of `mptgen.pl`.
+
+```{r eval=FALSE}
+tnt2nexPath <-  paste0(HOME, '/tnt2nex.pl')
+mptgenPath <-  paste0(HOME, '/mptgen.pl')
+
+download.file(paste0(INST_ROOT, "analysis-parsimony/tnt2nex.pl"), tnt2nexPath)
+tnt2nex <- readLines(tnt2nexPath)
+tnt2nex[3] <- paste0('$dir = "', HOME, '/Trees";')
+writeLines(tnt2nex, tnt2nexPath)
+
+download.file(paste0(INST_ROOT, "analysis-parsimony/mptgen.pl"), mptgenPath)
+mptgen <- readLines(mptgenPath)
+mptgen[3] <- paste0('$dir = "', HOME, '";')
+writeLines(mptgen, mptgenPath)
+```
+
+*	Copy the file `template.run` into the tntscript subdirectory.
+
+```{r eval=FALSE}
+download.file(paste0(INST_ROOT, "analysis-parsimony/template.run"), 
+              paste0(HOME, '/tntscript/template.run'))
+```
+
+*	Download Appendix S1 from Congreve and Lamsdell [-@Congreve2016dd]  (doi:[10.5061/dryad.7dq0j/1](https://dx.doi.org/10.5061/dryad.7dq0j/1)) and unzip its 100 text files to `Matrices`.
+
+```{r eval=FALSE}
+tempFile <- tempfile(fileext='.zip')
+download.file("https://datadryad.org/bitstream/handle/10255/dryad.101095/S1%20-%20TNT%20files.zip", tempFile)
+unzip(tempFile, exdir=paste0(HOME, '/Matrices'))
+```
+
+* Perform the analyses by executing `mptgen.pl`. (Once Perl is installed,
+you can just double-click the file.)

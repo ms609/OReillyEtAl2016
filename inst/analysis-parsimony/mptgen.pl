@@ -1,7 +1,7 @@
 # Runs mpts.run for files 001 > 100
 print "\r\nmptgen.pl: generate most parsimonious trees using TNT";
 # TNT does not find optimal trees with k=2 on: 100_20_6, 100_20_8, 100_44_3
-$dir = "C:/Research/implied_weight/oreilly";
+$dir = "C:/Research/oreilly";
 
 open (TEMPLATE, "<$dir/tntscript/template.run") or warn "ERROR: can't find template file";
 @template = <TEMPLATE>;
