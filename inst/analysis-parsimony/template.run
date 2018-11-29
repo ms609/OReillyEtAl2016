@@ -6,11 +6,17 @@ bbreak:tbr;
 var: nt;
 subopt 0;
 
-/* Conduct search, break branches to find many MPTs, and take their strict consensus */
-/* Note the location of the consensus tree in memory (as 'nt') */
-keep 0; hold 10000; piwe-  ;xmult;bbreak;nels*;set nt ntrees;
+/* Clear memory */
+keep 0; hold 10000; 
+/* Conduct search, break branches to find many MPTs */
+piwe-; xmult; bbreak;
+/* Take the strict consensus, and note its location in memory (as 'nt') */
+nels*; set nt ntrees;
+
 /* Conduct resampling */
-ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/eq.%1.sym;ttag/;log/;ttag-;
+ttag=;resample=sym replications 5000 gc frequency from 'nt';
+/* Save strict consensus tree with node labels */
+log Trees/eq.%1.sym;ttag/;log/;ttag-;
 
 /* Repeat with implied weighting */
 keep 0;hold 10000;piwe=2  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k2.%1.sym;  ttag/;log/;ttag-;
