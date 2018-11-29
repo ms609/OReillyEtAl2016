@@ -14,7 +14,8 @@ close TEMPLATE;
 foreach my $rep (1..10) {
   foreach my $nchar (100, 350, 1000) {
     foreach my $rate (1..100) {
-      $fileno = $nchar . "/" . $rate . "_" . $rep;
+      $rate_rep = $rate . "_" . $rep;
+      $fileno = $nchar . "/" . $rate_rep;
       if (-e "$dir/Trees/k200.$fileno.sym") {
         print "\nSkipping $fileno: results already exist for k200";
       } else {
@@ -23,7 +24,8 @@ foreach my $rep (1..10) {
         open (SCRIPT, ">", $scriptfile) or warn "Can't open script file";
         for (@template) {
           $line = $_;
-          $line =~ s/%1/$nchar\/$rate-$rep/g;
+          $line =~ s/%1/$nchar/g;
+          $line =~ s/%2/$rate_rep/g;
           print SCRIPT $line;
         }
         close SCRIPT;

@@ -1,5 +1,5 @@
 macro-;
-proc matrices\%1.NEX;
+proc matrices\%1_char_matrices\%1_%2.NEX;
 macro =;
 xmult:repl 10 hits 20 level 4 chklevel 5 rss fuse5 rat10 drift15; 
 bbreak:tbr;
@@ -16,15 +16,15 @@ nels*; set nt ntrees;
 /* Conduct resampling */
 ttag=;resample=sym replications 5000 gc frequency from 'nt';
 /* Save strict consensus tree with node labels */
-log Trees/eq.%1.sym;ttag/;log/;ttag-;
+log Trees/eq.%1/%2.sym;ttag/;log/;ttag-;
 
 /* Repeat with implied weighting */
-keep 0;hold 10000;piwe=2  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k2.%1.sym;  ttag/;log/;ttag-;
-keep 0;hold 10000;piwe=3  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k3.%1.sym;  ttag/;log/;ttag-;
-keep 0;hold 10000;piwe=5  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k5.%1.sym;  ttag/;log/;ttag-;
-keep 0;hold 10000;piwe=10 ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k10.%1.sym; ttag/;log/;ttag-;
-keep 0;hold 10000;piwe=20 ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k20.%1.sym; ttag/;log/;ttag-;
-keep 0;hold 10000;piwe=200;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k200.%1.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=2  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log   Trees/k2.%1/%2.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=3  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log   Trees/k3.%1/%2.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=5  ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log   Trees/k5.%1/%2.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=10 ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log  Trees/k10.%1/%2.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=20 ;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log  Trees/k20.%1/%2.sym;ttag/;log/;ttag-;
+keep 0;hold 10000;piwe=200;xmult;bbreak;nels*;set nt ntrees;ttag=;resample=sym replications 5000 gc frequency from 'nt';log Trees/k200.%1/%2.sym;ttag/;log/;ttag-;
 
 quit;
 macro -;
