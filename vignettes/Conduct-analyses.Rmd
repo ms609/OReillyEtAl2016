@@ -71,7 +71,7 @@ sapply(paste0(HOME, '/', c('', 'Matrices', 'Trees')), dir.create)
 sapply(N_CHAR, function (nChar) 
   sapply(paste0(HOME, '/Trees/', 
                 c('eq', 'k2', 'k3', 'k5', 'k10', 'k20', 'k200'),
-                '.', nChar), dir.create))
+                '.', nChar), dir.create, showWarnings=FALSE))
 ```
 
 *	[Install TNT](http://www.lillo.org.ar/phylogeny/tnt/).
