@@ -6,7 +6,7 @@ $dir = "C:/Research/oreilly";
 ## Nothing below this line should need editing.
 print "\r\nmptgen.pl: generate most parsimonious trees using TNT";
 
-open (TEMPLATE, "<$dir/tntscript/template.run") or warn "ERROR: can't find template file";
+open (TEMPLATE, "<$dir/tnt_template.run") or warn "ERROR: can't find template file";
 @template = <TEMPLATE>;
 close TEMPLATE;
 
