@@ -79,7 +79,6 @@ sapply(N_CHAR, function (nChar)
 ```{r eval=FALSE, message=FALSE}
 zipFile <- paste0(HOME, '/TNT.ZIP')
 # This is the Windows path; use the appropriate path for your operating system
-#download.file("http://www.lillo.org.ar/phylogeny/tnt/tnt-win-no-tax-limit.zip", tempFile)
 download.file("http://www.lillo.org.ar/phylogeny/tnt/ZIPCHTNT.ZIP", 
               destfile=zipFile, method='auto', mode='wb')
 unzip(zipFile, 'tnt.exe', exdir=HOME)
