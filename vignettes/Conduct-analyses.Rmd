@@ -25,6 +25,19 @@ file used to generate this document (`vignettes/Conduct-analyses.Rmd`) to run th
 R scripts that will copy all necessary files and begin analyses on your 
 behalf.
 
+You will need to specify some paths for automatic downloading:
+```{R}
+# Directory in which to install MrBayes
+BAYES_DIR <- "C:/Research/MrBayes"
+
+# Directory in which to conduct parsimony analysis
+HOME <- "C:/Research/oreilly" # Must not end in a trailing '/'
+
+# GitHub remote
+INST_ROOT <- "https://raw.githubusercontent.com/ms609/OReillyEtAl2016/master/inst/"
+```
+
+
 ## Bayesian analysis
 
 ###bayesgen.pl — Generate MrBayes files
@@ -45,6 +58,12 @@ its nexus files to a local directory (default: C:/Bayes64/iw)
 
 *	Modify file to specify path to MrBayes (default: `C:/Bayes64/MrBayes/mrbayes_x64.exe`) and path to extracted matrices (default: `C:/Bayes64/iw`)
 
+* Perform the analyses by executing `bayesgen.pl`. (Once Perl is installed,
+you can just double-click the file.)
+
+* Once the analyses are complete, copy all files ending `.run#.nex` to 
+  ``r HOME`/MrBayes`.
+
 ## Parsimony analysis
 
 ###mptgen.pl — Generate parsimony trees in TNT
@@ -64,8 +83,6 @@ create the further subdirectories `eq.100`, `eq.350`, `eq.1000`,
 and `k200`.
 
 ```{r eval=FALSE}
-HOME <- "C:/Research/oreilly" # Must not end in a trailing '/'
-INST_ROOT <- "https://raw.githubusercontent.com/ms609/OReillyEtAl2016/master/inst/"
 N_CHAR <- c(100, 350, 1000)
 sapply(paste0(HOME, '/', c('', 'Matrices', 'Trees')), dir.create)
 sapply(N_CHAR, function (nChar) 

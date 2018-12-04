@@ -33,37 +33,49 @@ DIR_ROOT = '../data-raw/trees/'
 N_BAYES_RUNS <- 2
 DATASET_NUMS <- 1:100
 REPL_NUMS <- 1:10
+NCHAR_VALUES <- c('100', '350', '1000')
 FILE_NUMS <- as.character(vapply(DATASET_NUMS, paste0, character(length(REPL_NUMS)),
                                  '_', REPL_NUMS))
 
-SO_NUMS <- formatC(1:20, width=2, format='d', flag='0') # Enumeration of suboptimal trees
+TIP_ORDER <- c("Osteolepiformes", "Ichthyostega", "Archeria", "Proterogyrinus", "Ariekanerpeton", "Seymouria", "Kotlassia", "Nectridea", "Utaherpeton", "Asaphestera", "Lysorophia", "Cardiocephalus", "Brachystelechidae", "Rhynchonkos", "Pantylus", "Microbrachis", "Adelogyrinidae", "Caeciliidae", "Typhlonectidae", "Ichthyophiidae", "Rhinatrematidae", "Eocaecilia", "Rhyacotritonidae", "Plethodontinae", "Bolitoglossinae", "Spelerpinae", "Hemidactylinae", "Amphiumidae", "Salamandridae", "Dicamptodontidae", "Ambystomatidae", "Proteidae", "Sirenidae", "Cryptobranchidae", "Hynobiidae", "Karaurus", "Leiopelmatidae", "Ascaphidae", "Pelodytidae", "Megophryidae", "Pelobatidae", "Scaphiopodidae", "Ranoidea", "Sooglossidae", "Heleophrynidae", "Myobatrachidae", "Calyptocephallidae", "Hyloidea", "Rhinophrynidae", "Pipidae", "Bombinatoridae", "Discoglossidae", "Triadobatrachus", "Aistopoda", "Westlothiana", "Procolophonidae", "Captorhinidae", "Synapsida", "Diadectes", "Limnoscelis", "Solenodonsaurus", "Gephyrostegidae", "Doleserpeton", "Amphibamus", "Apateon", "Tersomius", "Ecolsonia", "Eryops", "Dendrerpeton", "Colosteidae", "Baphetidae", "Crassigyrinus", "Tulerpeton", "Acanthostega", "Panderichthyidae");
+
 
 # Trees themselves are saved in the data-raw/Trees subdirectory
-TREE_FILE <- paste0(DIR_ROOT, '%s.%s/R%s%s.con.nex') # Defines the pattern of the file name
+TREE_FILE <- paste0(DIR_ROOT, '%s.%s/%s.sym') # Defines the pattern of the file name
+BAYES_FILE <- paste0(DIR_ROOT, '%s.%s/R%s.con.nex') # Defines the pattern of the file name
 BAYES_TREE <- paste0(DIR_ROOT, 'MrBayes/%s_%s.mb.nex.run%s.nex')
-CI_PATH <- paste0(DIR_ROOT, 'consistency_indices.txt')
+
 SUBOPTIMAL <- list(
-  mk = seq(1, 0.5, length.out = 21)
+  mk = seq(1, 0.5, length.out = 21L),
+  gc = c(-100, -75, -50, -25, seq(0, 100, length.out = 21L-4L))
 )
 
 ReadNexus <- ape::read.nexus
 WriteNexus <- ape::write.nexus
-
-ReadNexusSafely <- function(filename) {
-  if (file.exists(filename)) ReadNexus(filename) else NULL
+  
+GenerateScores <- function(analysis, trees) {
+  cat("Generating results for", analysis, "...  ")
+  cat("Quartets...")
+  orQuartets[[as.character(NCHAR)]][[analysis]] <<-
+    vapply(trees, Quartet::QuartetStatus, 0L * BLANK_QUARTS[, , 1], 
+           cf = referenceTree)
+  cat(" Done. Partitions...")
+  orPartitions[[as.character(NCHAR)]][[analysis]] <<- 
+    vapply(trees, Quartet::SplitStatus, 0 * BLANK_SPLITS[, , 1],
+           cf = referenceTree)
+  cat(" Done.\n")
 }
 
-ANALYSES <- c('markov', 'equal', 'implied2', 'implied3', 'implied5',
-              'implied10', 'implied20', 'implied200', 'impliedC')
+ANALYSES <- c(mk = 'markov', eq = 'equal', k2 = 'implied2', k3 = 'implied3', 
+              k5 = 'implied5', k10 = 'implied10', k20 = 'implied20', 
+              k200 ='implied200', kC = 'impliedC')
 
 BLANK_SPLITS <- array(NA, c(21, 6, length(FILE_NUMS)),
                       dimnames=list(NULL, c("cf", "ref", "cf_and_ref",
                                      "cf_not_ref", "ref_not_cf", "RF_dist"),
                                     FILE_NUMS))
-ALL_BLANK_S <- lapply(ANALYSES, function(x) BLANK_SPLITS)
-names(ALL_BLANK_S) <- ANALYSES
-
-
+ALL_BLANK_P <- lapply(ANALYSES, function(x) BLANK_SPLITS)
+names(ALL_BLANK_P) <- ANALYSES
 
 BLANK_QUARTS <- array(NA, c(21, 6, length(FILE_NUMS)),
                       dimnames=list(NULL, c( "Q",  "s", "d", "r1", "r2", "u"),
@@ -77,18 +89,59 @@ THESE_FILE_NUMS <- as.character(vapply(DATASET_NUMS, paste0,
 if (!any(file.exists(paste0(c('..', '.'), '/data/orQuartets.rda')))) {
   # Don't overwrite existing data!
   orPartitions <- list('100'=ALL_BLANK_S, '350'=ALL_BLANK_S, '1000'=ALL_BLANK_S)
-  orQuartets <- list('100'=ALL_BLANK_Q, '350'=ALL_BLANK_Q, '1000'=ALL_BLANK_Q)
+  orQuartets   <- list('100'=ALL_BLANK_Q, '350'=ALL_BLANK_Q, '1000'=ALL_BLANK_Q)
   usethis::use_data(orQuartets, orPartitions, overwrite=FALSE)
   remove("orQuartets", "orPartitions")
 }
 
+#' @param tree Output of TreeSearch::TNTText2Tree(text)
+TranslateTntTips <- function(tree) {
+  tree$tip.label <- TIP_ORDER[as.integer(tree$tip.label) + 1L]
+  tree
+}
+
+Resampling <- function (jackFile) {
+  jackLines <- readLines(jackFile)
+  jackTree <- TreeSearch::TNTText2Tree(jackLines[3])
+  jackTipOrder <- order(as.integer(jackTree$tip.label) + 1L)
+  jackNodeOrder <- unique(unlist(phangorn::Ancestors(jackTree, jackTipOrder)))[-1]
+  nTntNode <- jackTree$Nnode
+  jackTree <- TranslateTntTips(jackTree)
+
+  jackScores <- trimws(gsub("ttag \\+\\d+ (.*); *", "\\1",
+                            jackLines[length(jackLines) -
+                                        (nTntNode - 2L):0]))[order(jackNodeOrder)]
+  jackScores <- gsub("\\?", 0, jackScores)
+  jackScores <- gsub("\\[(\\d+)\\]", "-\\1", jackScores)
+  jackScores <- matrix(as.double(unlist(strsplit(jackScores, '/'))), 2, dimnames=list(c('freq', 'gc'), NULL))
+
+  attr(jackTree, 'scores') <- jackScores
+  # Return:
+  jackTree
+}
+
+ReduceTreesBySupport <- function(tree) {
+  nTip <- length(tree$tip.label)
+  rootNode <- nTip + 1L
+  nNode <- tree$Nnode
+  nodeSupport <- attr(tree, 'scores')['gc', ]
+  
+  nodeNumbers <- rootNode + seq_along(nodeSupport)
+  collapse <- lapply(SUBOPTIMAL[['gc']], function (threshold) nodeNumbers[nodeSupport < threshold])
+  
+  # Return:
+  lapply(collapse, function (toCollapse) TreeSearch::CollapseNode(tree, toCollapse))
+}
+
+SupportSuboptimal <- function (filePath) {
+  resampled <- Resampling(filePath)
+  reduced <- ReduceTreesBySupport(resampled)
+  structure(reduced, class='multiPhylo')
+}
+
 # Helper function to load suboptimal trees
 LoadSuboptimal <- function (fileNums, pref) {
-  ret <- lapply(fileNums, function (NUM) {
-    structure(lapply(c(sprintf(TREE_FILE, pref, NCHAR, NUM, ''), 
-             sprintf(TREE_FILE, pref, NCHAR, NUM, paste0('.so', SO_NUMS))),
-           ReadNexusSafely), class = 'multiPhylo')
-  })
+  ret <- lapply(sprintf(TREE_FILE, pref, NCHAR, fileNums), SupportSuboptimal)
   names(ret) <- fileNums
   
   # Return:
@@ -100,19 +153,16 @@ LoadSuboptimal <- function (fileNums, pref) {
 
 ### Load trees, calcuate and save statistics
 
-This uses the `usethis` package (which you'll need to install using 
-`install.packages('usethis')` if you haven't already) to include the data 
-with the package.
-
 ```{R calculate-statistics}
-NCHAR_VALUES <- c('100', '350', '1000')
-data("orQuartets")
-data("orPartitions")
+orQuartets <- OReillyEtAl2016::orQuartets
+orPartitions <- OReillyEtAl2016::orPartitions
+
 NCHAR_NEEDED <- vapply(NCHAR_VALUES, function (NCHAR)
   all(is.na(orQuartets[[NCHAR]][['impliedC']][21, 'Q', ])), logical(1))
 for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
   
   for (NUM in THESE_FILE_NUMS) {
+    # Generate consensus trees from MrBayes output.
     if (!file.exists(sprintf(TREE_FILE, 'mk', NCHAR, NUM, ''))
         && all(file.exists(sprintf(BAYES_TREE, NCHAR, NUM, seq_len(N_BAYES_RUNS)))))
     {
@@ -127,47 +177,40 @@ for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
   
 
   # Load consensus trees from Equal Weights and Markov model analyses
-  markov <- lapply(sprintf(TREE_FILE, 'mk', NCHAR, THESE_FILE_NUMS, ''), ReadNexusSafely)
+  markov <- lapply(sprintf(BAYES_FILE, 'mk', NCHAR, THESE_FILE_NUMS), ReadNexusSafely)
   names(markov) <- THESE_FILE_NUMS
   
   SAFE_FILE_NUMS <- THESE_FILE_NUMS[
     !vapply(markov, is.null, logical(1)) &
-    file.exists(paste0(DIR_ROOT, 'k2.'  , NCHAR, '/R', THESE_FILE_NUMS, '.con.nex')) & 
-    file.exists(paste0(DIR_ROOT, 'k5.'  , NCHAR, '/R', THESE_FILE_NUMS, '.con.nex')) & 
-    file.exists(paste0(DIR_ROOT, 'k10.' , NCHAR, '/R', THESE_FILE_NUMS, '.con.nex')) & 
-    file.exists(paste0(DIR_ROOT, 'k20.' , NCHAR, '/R', THESE_FILE_NUMS, '.con.nex')) & 
-    file.exists(paste0(DIR_ROOT, 'k200.', NCHAR, '/R', THESE_FILE_NUMS, '.con.nex'))]
+    file.exists(paste0(DIR_ROOT, 'k2.'  , NCHAR, '/', THESE_FILE_NUMS, '.sym')) & 
+    file.exists(paste0(DIR_ROOT, 'k5.'  , NCHAR, '/', THESE_FILE_NUMS, '.sym')) & 
+    file.exists(paste0(DIR_ROOT, 'k10.' , NCHAR, '/', THESE_FILE_NUMS, '.sym')) & 
+    file.exists(paste0(DIR_ROOT, 'k20.' , NCHAR, '/', THESE_FILE_NUMS, '.sym')) & 
+    file.exists(paste0(DIR_ROOT, 'k200.', NCHAR, '/', THESE_FILE_NUMS, '.sym'))]
   
   # Some TNT / MrBayes analyses failed to complete after > 48 hours
-  cat("Results not available for: ",
+  cat(NCHAR, "characters: Results not available for: ",
       THESE_FILE_NUMS[!THESE_FILE_NUMS %in% SAFE_FILE_NUMS], "\n")
   
-  reconstructedTrees <- list(
-    markov = markov[SAFE_FILE_NUMS],
-    equal = LoadSuboptimal(SAFE_FILE_NUMS, 'eq'),
-    implied2 = LoadSuboptimal(SAFE_FILE_NUMS, 'k2'),
-    implied3 = LoadSuboptimal(SAFE_FILE_NUMS, 'k3'),
-    implied5 = LoadSuboptimal(SAFE_FILE_NUMS, 'k5'),
-    implied10 = LoadSuboptimal(SAFE_FILE_NUMS, 'k10'),
-    implied20 = LoadSuboptimal(SAFE_FILE_NUMS, 'k20'),
-    implied200 = LoadSuboptimal(SAFE_FILE_NUMS, 'k200'),
-    impliedC = NULL
-  )
+  GenerateScores('markov', markov[SAFE_FILE_NUMS])
+  remove('markov') # Free memory
   
-  tr2   <- reconstructedTrees[['implied2']]    
-  tr3   <- reconstructedTrees[['implied3']]    
-  tr5   <- reconstructedTrees[['implied5']]    
-  tr10  <- reconstructedTrees[['implied10']]  
-  tr20  <- reconstructedTrees[['implied20']]  
-  tr200 <- reconstructedTrees[['implied200']]
-  reconstructedTrees[['impliedC']] <- lapply(SAFE_FILE_NUMS,
+  GenerateScores('equal', LoadSuboptimal(SAFE_FILE_NUMS, 'eq'))
+  
+    implied2Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k2')
+    implied3Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k3')
+    implied5Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k5')
+   implied10Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k10')
+   implied20Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k20')
+  implied200Trees <- LoadSuboptimal(SAFE_FILE_NUMS, 'k200')
+    impliedCTrees <- lapply(SAFE_FILE_NUMS,
     function(NUM) {
-      i2   <-   tr2[[NUM]]
-      i3   <-   tr3[[NUM]]
-      i5   <-   tr5[[NUM]]
-      i10  <-  tr10[[NUM]]
-      i20  <-  tr20[[NUM]]
-      i200 <- tr200[[NUM]]
+      i2   <-   implied2Trees[[NUM]]
+      i3   <-   implied3Trees[[NUM]]
+      i5   <-   implied5Trees[[NUM]]
+      i10  <-  implied10Trees[[NUM]]
+      i20  <-  implied20Trees[[NUM]]
+      i200 <- implied200Trees[[NUM]]
       
       # Return:
       structure(lapply(1:21, function (j) 
@@ -175,32 +218,22 @@ for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
         class = 'multiPhylo')
       }
     )
-  names(reconstructedTrees[['impliedC']]) <- SAFE_FILE_NUMS
-  remove("tr2", "tr3", "tr5", "tr20", "tr10", "tr200")
-
+  names(impliedCTrees) <- SAFE_FILE_NUMS
+  
   ### Calculate tree statistics
   
   # Define the expected format of tree statistics (needed for vapply)
   # (Using lapply or sapply instead of vapply can be simpler, and is only slightly slower)
   
-  for (analysis in names(reconstructedTrees)) {
-    cat("Generating results for", analysis, "...  ")
-    theseTrees <- reconstructedTrees[[analysis]]
-    theseScores <- orQuartets[[as.character(NCHAR)]][[analysis]]
-    
-    cat("Quartets...")
-    orQuartets[[as.character(NCHAR)]][[analysis]] <-
-      vapply(theseTrees, Quartet::QuartetStatus, 0L * BLANK_QUARTS[, , 1], 
-             cf = referenceTree)
-    cat(" Done. Partitions...")
-    orPartitions[[as.character(NCHAR)]][[analysis]] <- 
-      vapply(theseTrees, Quartet::SplitStatus, 0 * BLANK_SPLITS[, , 1],
-             cf=referenceTree)
-    cat(" Done.\n")
-  }
-  remove(reconstructedTrees)
+  GenerateScores(  'impliedC', impliedCTrees); remove(impliedCTrees)
+  GenerateScores(  'implied2', implied2Trees); remove(implied2Trees)
+  GenerateScores(  'implied3', implied3Trees); remove(implied3Trees)
+  GenerateScores(  'implied5', implied5Trees); remove(implied5Trees)
+  GenerateScores( 'implied10', implied10Trees); remove(implied10Trees)
+  GenerateScores( 'implied20', implied20Trees); remove(implied20Trees)
+  GenerateScores('implied200', implied200Trees); remove(implied200Trees)
+  
   usethis::use_data(orQuartets, orPartitions, overwrite=TRUE)
 }
 ```
-
 
