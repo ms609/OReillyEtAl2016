@@ -11,7 +11,7 @@ It incorporates data from:
 - O’Reilly, J. E., M. N. Puttick, L. Parry, A. R. Tanner, J. E. Tarver, J. Fleming, D. Pisani, and P. C. J. Donoghue. 2016. Data from: Bayesian methods outperform parsimony but at the expense of precision in the estimation of phylogeny from discrete morphological data. Dryad Digital Repository, doi:10.5061/dryad.10qf3.
 
 Equivalent data and analyses from data simulated by Congreve & Lamsdell (2016) 
-are available at [https://github.com/ms609/CongreveLamsdell2016].
+are available at https://github.com/ms609/CongreveLamsdell2016.
 
 ## Installation 
 
