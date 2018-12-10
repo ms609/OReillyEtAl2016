@@ -1,0 +1,41 @@
+language: r
+r:
+ - devel
+cache: packages
+warnings_are_errors: true
+r_check_args: --no-manual --no-vignettes --as-cran
+env:
+ - _R_CHECK_FORCE_SUGGESTS_=false
+sudo: required # Required to use binary packages, which are faster than source installs
+
+git:
+  depth: 1
+
+addons:
+  apt:
+    packages:
+      - ghostscript
+
+r_binary_packages:
+ - ape
+ - devtools
+ - knitr
+ - rmarkdown
+ - roxygen2
+
+# Some packages not available as binaries:
+r_packages:
+ - bookdown
+ - Ternary
+
+r_github_packages:
+ - ms609/Quartet
+
+before_script:
+ - R -e "devtools::document()"
+ - chmod +x ./_build.sh
+ - chmod +x ./_deploy.sh
+
+script:
+  - travis_wait 43 ./_build.sh
+  - ./_deploy.sh

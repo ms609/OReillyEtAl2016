@@ -4,6 +4,7 @@ cran-comments.md
 ^.*\.dll$
 ^.*\.json$
 ^.*\.o$
+^.*\.sh$
 ^.*\.xml$
 ^.*\.yml$
 /^\.git/
