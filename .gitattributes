@@ -2,4 +2,3 @@
 * text=auto
 data-raw/trees filter=lfs diff=lfs merge=lfs -text
 *.rda filter=lfs diff=lfs merge=lfs -text
-*.nex filter=lfs diff=lfs merge=lfs -text
