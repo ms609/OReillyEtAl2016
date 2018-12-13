@@ -1,5 +1,5 @@
 ---
-title: "AnalysingO'Reilly _et al_. matrices"
+title: "Analysing O'Reilly _et al_. matrices"
 author: "Martin R. Smith <martin.smith@durham.ac.uk>"
 date: "`r Sys.Date()`"
 output: 
@@ -7,14 +7,16 @@ output:
     toc: yes
     includes:
       in_header: ../inst/preamble.tex
+  html_document: 
+    default: yes
 bibliography: ../inst/REFERENCES.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/dependent/biology-letters.csl
 link-citations: yes
 github-repo: ms609/Quartet
 vignette: >
   %\VignetteIndexEntry{Data analysis protocol}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 The files required to reproduce these analyses are included in the R
@@ -40,7 +42,7 @@ INST_ROOT <- "https://raw.githubusercontent.com/ms609/OReillyEtAl2016/master/ins
 
 ## Bayesian analysis
 
-###bayesgen.pl — Generate MrBayes files
+### bayesgen.pl — Generate MrBayes files
 
 A Perl script to execute analysis using Markov models in MrBayes.
 
@@ -66,7 +68,7 @@ you can just double-click the file.)
 
 ## Parsimony analysis
 
-###mptgen.pl — Generate parsimony trees in TNT
+### mptgen.pl — Generate parsimony trees in TNT
 
 A Perl script to generate most parsimonious trees by parsimony search in TNT.
 
@@ -142,3 +144,10 @@ file.remove(tempFile)
 
 * Perform the analyses by executing `mptgen.pl`. (Once Perl is installed,
 you can just double-click the file.)
+
+## Data analysis
+
+Once the data have ben gneerated, they can be analysed using
+[https://github.com/ms609/OReillyEtAl2016/blob/master/data-raw/GenerateData.Rmd].
+
+## References
