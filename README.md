@@ -26,4 +26,5 @@ The package contains
 detailing how analyses were conducted, to facilitate reprodution of results.
 
 The `R` data objects can be analysed using the code and procedures detailed
-for the analagous datasets at [https://github.com/ms609/CongreveLamsdell2016].
+for the analagous datasets at https://github.com/ms609/CongreveLamsdell2016.
+
