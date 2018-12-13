@@ -4,6 +4,7 @@
 
 # Session Data files
 .RData
+.Rprofile
 
 # Example code in package build process
 *-Ex.R
@@ -34,9 +35,3 @@ vignettes/*.pdf
 # Other temporary files
 ~temp*
 
-# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
-rsconnect/
-
-# FOR NOW: data-raw
-data-raw/trees/
-.Rprofile
