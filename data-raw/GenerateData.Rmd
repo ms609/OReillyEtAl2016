@@ -157,9 +157,7 @@ LoadSuboptimal <- function (fileNums, pref) {
 orQuartets <- OReillyEtAl2016::orQuartets
 orPartitions <- OReillyEtAl2016::orPartitions
 
-NCHAR_NEEDED <- vapply(NCHAR_VALUES, function (NCHAR)
-  all(is.na(orQuartets[[NCHAR]][['impliedC']][21, 'Q', ])), logical(1))
-for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
+for (NCHAR in NCHAR_VALUES) {
   
   for (NUM in THESE_FILE_NUMS) {
     # Generate consensus trees from MrBayes output.
@@ -233,7 +231,12 @@ for (NCHAR in NCHAR_VALUES[NCHAR_NEEDED]) {
   GenerateScores( 'implied20', implied20Trees); remove(implied20Trees)
   GenerateScores('implied200', implied200Trees); remove(implied200Trees)
   
-  usethis::use_data(orQuartets, orPartitions, overwrite=TRUE)
+  usethis::use_data(orPartitions, overwrite=TRUE, compress='bzip2')
+  usethis::use_data(orQuartets,   overwrite=TRUE, compress='xz')
 }
+
+tools::checkRdaFiles('data')
+# tools::resaveRdaFiles('data') # Slow; once optimal compression identified,
+# specify it in use_data
 ```
 
