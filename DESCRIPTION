@@ -29,10 +29,11 @@ Encoding: UTF-8
 Language: en-GB
 Depends: R (>= 3.4.0)
 Suggests:
-    ape,
-    Quartet,
-    testthat,
-    usethis
+  ape,
+  Quartet,
+  rmarkdown,
+  testthat,
+  usethis
 RdMacros: Rdpack
 LazyData: true
 ByteCompile: true
