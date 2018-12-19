@@ -232,11 +232,10 @@ for (NCHAR in NCHAR_VALUES) {
   GenerateScores('implied200', implied200Trees); remove(implied200Trees)
   
   usethis::use_data(orPartitions, overwrite=TRUE, compress='bzip2')
-  usethis::use_data(orQuartets,   overwrite=TRUE, compress='xz')
+  usethis::use_data(orQuartets,   overwrite=TRUE, compress='bzip2') # xz better, but errors
 }
 
-tools::checkRdaFiles('data')
-# tools::resaveRdaFiles('data') # Slow; once optimal compression identified,
-# specify it in use_data
+tools::resaveRdaFiles('data') # Slow; once optimal compression identified,
+                              # specify it in use_data
 ```
 
