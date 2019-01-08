@@ -2,7 +2,8 @@
 # Set $dir to point to the directory containing the matrices (download these
 # from Dryad, doi:10.5061/dryad.10qf3) and
 # mrbayesblock.nex (available from the package's /inst folder)
-$dir = "C:/Bayes64/iwor";
+$dir = "C:/Research/MrBayes/or";
+$bayes_dir = "C:/Bayes64/MrBayes/mrbayes_x64.exe"
 
 ####
 open (MBB, "<$dir/mrbayesblock.nex") or warn "ERROR: can't find template file at $dir/mrbayesblock.nex";
@@ -43,7 +44,7 @@ foreach my $k (1..10) {
           print SPLICE;
         }
         close SPLICE;
-        system("C:/Bayes64/MrBayes/mrbayes_x64.exe $splicefile");
+        system("$bayes_dir/mrbayes_x64.exe $splicefile");
 
         open (CONSENSUS, "<$consensus") or warn ("Can't open consensus trees");
         @lines = <CONSENSUS>;
