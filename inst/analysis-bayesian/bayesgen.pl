@@ -13,7 +13,7 @@ close MBB;
 foreach my $k (1..10) {
   foreach my $j (1..100) {
     foreach my $i (100, 350, 1000) {
-      $fileno = $i . '_' . $j . '_' . $k;
+      $fileno = $i . '_char_matrices/' . $i . '_' . $j . '_' . $k;
       $consensus = "$dir/$fileno.mb.nex.con.tre";
       if (-e $consensus) {
         print "\n Output already exists at $consensus";

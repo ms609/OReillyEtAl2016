@@ -1,7 +1,7 @@
-## Called by bayesgen.pl
-## Set directory below.
+## $dir should point to the same path as used in bayesgen.pl
+$dir = "C:/Research/MrBayes/iw";
 
-##################################
+# Nothing below this line should require editing.
 use File::Find;
 use File::stat;
 use Time::localtime;
@@ -38,7 +38,7 @@ sub t2nex() {
       for (@lines) {
         ++$i;
         if ($i < 5) {
-          print OUTPUT; 
+          print OUTPUT;
         } elsif ($i > 161) { # The number 2538 was here on 2018-04-26... not sure where it came from!
           s/:[^,\(\)]+//g;
           # Replace taxon numbers with taxon names
