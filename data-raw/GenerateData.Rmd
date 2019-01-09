@@ -70,15 +70,14 @@ ANALYSES <- c(mk = 'markov', eq = 'equal', k2 = 'implied2', k3 = 'implied3',
               k5 = 'implied5', k10 = 'implied10', k20 = 'implied20', 
               k200 ='implied200', kC = 'impliedC')
 
-BLANK_SPLITS <- array(NA, c(21, 6, length(FILE_NUMS)),
-                      dimnames=list(NULL, c("cf", "ref", "cf_and_ref",
-                                     "cf_not_ref", "ref_not_cf", "RF_dist"),
+BLANK_SPLITS <- array(NA, c(21, 8, length(FILE_NUMS)),
+                      dimnames=list(NULL, c("N", "P1", "P2", "s", "d1", "d2", "r1", "r2"),
                                     FILE_NUMS))
 ALL_BLANK_P <- lapply(ANALYSES, function(x) BLANK_SPLITS)
 names(ALL_BLANK_P) <- ANALYSES
 
-BLANK_QUARTS <- array(NA, c(21, 6, length(FILE_NUMS)),
-                      dimnames=list(NULL, c( "Q",  "s", "d", "r1", "r2", "u"),
+BLANK_QUARTS <- array(NA, c(21, 7, length(FILE_NUMS)),
+                      dimnames=list(NULL, c("N", "Q",  "s", "d", "r1", "r2", "u"),
                                     FILE_NUMS))
 ALL_BLANK_Q <- lapply(ANALYSES, function(x) BLANK_QUARTS)
 names(ALL_BLANK_Q) <- ANALYSES
