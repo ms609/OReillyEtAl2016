@@ -50,21 +50,58 @@ The script reads the datasets of O'Reilly _et al_. [-@OReilly2016], appends a Mr
 
 Before running the script:
 
-*	Install MrBayes (mrbayes.sourceforge.net)
+*	[Install MrBayes](http://mrbayes.sourceforge.net/)
+```{r eval=FALSE}
+MRBAYES_RELEASE <- "https://github.com/NBISweden/MrBayes/releases/download/v3.2.6/MrBayes-3.2.6_WIN32_x64.zip"
+zipFile <- tempfile(fileext='.zip')
+download.file(MRBAYES_RELEASE, destfile=zipFile, method='auto', mode='wb')
+unzip(zipFile, c('MrBayes/mrbayes_x64.exe', 'MrBayes/mrbayes_x86.exe'), 
+      exdir=BAYES_DIR, junkpaths=TRUE)
+file.remove(zipFile)
+```
 
 *	Download the matrices from O'Reilly _et al_. 2016 [-@OReilly2016dd] 
 (doi:[10.5061/dryad.10qf3/5](https://dx.doi.org/10.5061/dryad.10qf3)) and unzip 
-its nexus files to a local directory (default: C:/Bayes64/iw) 
+its Nexus files to a local directory (default: `C:/Research/oreilly/Matrices`) 
 
-*	Copy `mrbayesblock.nex` to the same directory
+```{r eval=FALSE}
+tempFile <- tempfile(fileext='.zip')
+download.file("https://datadryad.org/bitstream/handle/10255/dryad.112089/oreilly2016matrices.zip", tempFile)
+unzip(tempFile, exdir=paste0(HOME, '/Matrices'))
+file.remove(tempFile)
+```
 
-*	Modify file to specify path to MrBayes (default: `C:/Bayes64/MrBayes/mrbayes_x64.exe`) and path to extracted matrices (default: `C:/Bayes64/iw`)
+*	Copy `mrbayesblock.nex` to the `Matrices` directory, and `bayesgen.pl` to the root
+MrBayes directory.
+Modify the latter files to specify the path to MrBayes (default: `C:/Research/MrBayes/`) and path to extracted matrices (default: `C:/Research/oreilly/Matrices`)
+
+```{r eval=FALSE}
+download.file(paste0(INST_ROOT, "analysis-bayesian/mrbayesblock.nex"),
+              paste0(HOME, '/Matrices/mrbayesblock.nex'))
+              
+bayesGenPath <- paste0(BAYES_DIR, '/bayesgen.pl')
+download.file(paste0(INST_ROOT, "analysis-bayesian/bayesgen.pl"), bayesGenPath)
+bayesGen <- readLines(bayesGenPath)
+bayesGen[5] <- paste0('$dir = "', HOME, '/Matrices";')
+bayesGen[6] <- paste0('$bayes_dir = "', BAYES_DIR, '";')
+writeLines(bayesGen, bayesGenPath)
+
+t2nexPath <- paste0(BAYES_DIR, '/t2nex.pl')
+download.file(paste0(INST_ROOT, "analysis-bayesian/t2nex.pl"), t2nexPath)
+t2nex <- readLines(t2nexPath)
+t2nex[2] <- paste0('$dir = "', HOME, '/Matrices";')
+writeLines(t2nex, t2nexPath)
+```
 
 * Perform the analyses by executing `bayesgen.pl`. (Once Perl is installed,
 you can just double-click the file.)
 
 * Once the analyses are complete, copy all files ending `.run#.nex` to 
   ``r HOME`/MrBayes`.
+```{r eval=FALSE}
+
+```
+  
 
 ## Parsimony analysis
 
@@ -131,7 +168,7 @@ download.file(paste0(INST_ROOT, "analysis-parsimony/tnt_template.run"),
               paste0(HOME, '/tnt_template.run'))
 ```
 
-*	Download the matrices from O'Reilly _et al_. [-@OReilly2016dd]  (doi:[10.5061/dryad.10qf3/5](https://dx.doi.org/10.5061/dryad.10qf3)) and unzip
+*	If you haven't already, download the matrices from O'Reilly _et al_. [-@OReilly2016dd]  (doi:[10.5061/dryad.10qf3/5](https://dx.doi.org/10.5061/dryad.10qf3)) and unzip
 its three folders to the `Matrices` directory.
 
 ```{r eval=FALSE}
