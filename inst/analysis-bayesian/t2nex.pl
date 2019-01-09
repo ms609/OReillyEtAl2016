@@ -1,5 +1,5 @@
 ## $dir should point to the same path as used in bayesgen.pl
-$dir = "C:/Research/MrBayes/iw";
+$dir = "C:/Research/oreilly/Matrices";
 
 # Nothing below this line should require editing.
 use File::Find;
