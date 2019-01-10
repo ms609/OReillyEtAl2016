@@ -4,51 +4,47 @@ citHeader(paste0("Data: O'Reilly et al. (2016a, b). Analysis: Smith (", year,
           ")."))
 
 citEntry(entry = "article",
-        journal = "BioRxiv",
+        journal = "Biology Letters",
         author = personList(as.person("Martin R. Smith")),
-        title = "Quantifying"), as.person("visualising divergence between pairs of phylogenetic trees",
-        year = year,
+        title = "Bayesian and parsimony approaches reconstruct informative trees from simulated morphological datasets",
+        year = "2019",
 
         textVersion =
-        paste0("Smith (", year, "). ",
-               "Quantifying"), as.person("visualising divergence between pairs of phylogenetic trees. ",
-               "BioRxiv",
-               ", doi: 10.1101/227942"))
+        paste0("Smith (2019). Bayesian and parsimony approaches reconstruct ",
+               "informative trees from simulated morphological datasets. ",
+               "Biology Letters, in production. Prepreint at BioRxiv, ",
+               "doi: 10.1101/227942"))
 
 citEntry(entry="article",
-  author = personList(as.person("O'Reilly, Joseph E."), as.person("Puttick, Mark N."),
-             as.person("Parry, Luke"), as.person("Tanner, Alastair R."),
-             as.person("Tarver, James E."), as.person("Fleming, James"),
-             as.person("Pisani, Davide"), as.person("Donoghue, Philip C. J.")),
+  author = personList(as.person("Joseph E. O'Reilly"), as.person("Mark N. Puttick"),
+             as.person("Luke Parry"), as.person("Alastair R. Tanner"),
+             as.person("James E. Tarver"), as.person("James Fleming"),
+             as.person("Davide Pisani"), as.person("Philip C. J. Donoghue")),
   journal = "Biology Letters",
   number = "4",
   pages = "20160081",
   title = "Bayesian methods outperform parsimony but at the expense of precision in the estimation of phylogeny from discrete morphological data",
   volume = "12",
   year = "2016",
-"
 
-
-  textVersion = paste0("O’Reilly, J. E., M. N. Puttick, L. Parry, A. R. ",
-                       "Tanner, J. E. Tarver, J. Fleming, D. Pisani,"), as.person("",
+  textVersion = paste0("O'Reilly, J. E., M. N. Puttick, L. Parry, A. R. ",
+                       "Tanner, J. E. Tarver, J. Fleming, D. Pisani, ",
                        "P. C. J. Donoghue. 2016. Bayesian methods outperform ",
                        "parsimony but at the expense of precision in the ",
                        "estimation of phylogeny from discrete morphological ",
-                       "data. Biology Letters, 12:20160081. ","
-                       doi:10.1098/rsbl.2016.0081")
+                       "data. Biology Letters, 12:20160081. ",
+                       "doi:10.1098/rsbl.2016.0081")
 )
 
 citEntry(entry="article",
-  author = personList(as.person("O'Reilly, Joseph E."), as.person("Puttick, Mark N."),
-             as.person("Parry, Luke"), as.person("Tanner, Alastair R."),
-             as.person("Tarver, James E."), as.person("Fleming, James"),
-             as.person("Pisani, Davide"), as.person("Donoghue, Philip C. J.")),
+  author = personList(as.person("Joseph E. O'Reilly"), as.person("Mark N. Puttick"),
+             as.person("Luke Parry"), as.person("Alastair R. Tanner"),
+             as.person("James E. Tarver"), as.person("James Fleming"),
+             as.person("Davide Pisani"), as.person("Philip C. J. Donoghue")),
   journal = "Dryad Digital Repository",
   pages = "doi:10.5061/dryad.10qf3",
   title = "Data from: Bayesian methods outperform parsimony but at the expense of precision in the estimation of phylogeny from discrete morphological data",
   year = "2016",
-"
-
 
   textVersion = paste0("O’Reilly, J. E., M. N. Puttick, L. Parry, A. R. Tanner, ",
                        "J. E. Tarver, J. Fleming, D. Pisani, and P. C. J. Donoghue.",
