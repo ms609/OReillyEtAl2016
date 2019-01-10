@@ -52,7 +52,8 @@
 #' \item{3}{The number of the matrix, from 1 to 100.}
 #' }
 #'
-#' @seealso \link{clMatrices}, \link{clReferenceTree}.
+#' @seealso `\link[CongreveLamsdell2016]{clMatrices}`,
+#'  `\link[CongreveLamsdell2016]{clReferenceTree}`.
 #' @source \insertRef{Congreve2016}{Quartet}
 "orQuartets"
 
