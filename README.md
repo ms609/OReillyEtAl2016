@@ -13,6 +13,11 @@ It incorporates data from:
 Equivalent data and analyses from data simulated by Congreve & Lamsdell (2016) 
 are available at https://github.com/ms609/CongreveLamsdell2016.
 
+The documentation has not yet been thoroughly checked for typographical errors; 
+if you find any issues, paritcularly in the installation instructions, please
+[let me know](https://github.com/ms609/OReillyEtAl2016/issues/new) so I can 
+address them.
+
 ## Installation 
 
 Install the package in `R` with:
