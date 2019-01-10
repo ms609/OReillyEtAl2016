@@ -1,7 +1,4 @@
-year <- "2017"
-
-citHeader(paste0("Data: O'Reilly et al. (2016a, b). Analysis: Smith (", year,
-          ")."))
+citHeader(paste0("Data: O'Reilly et al. (2016a, b). Analysis: Smith (2019)."))
 
 citEntry(entry = "article",
         journal = "Biology Letters",
@@ -10,7 +7,7 @@ citEntry(entry = "article",
         year = "2019",
 
         textVersion =
-        paste0("Smith (2019). Bayesian and parsimony approaches reconstruct ",
+        paste0("Smith, M. R. (2019). Bayesian and parsimony approaches reconstruct ",
                "informative trees from simulated morphological datasets. ",
                "Biology Letters, in production. Prepreint at BioRxiv, ",
                "doi: 10.1101/227942"))
