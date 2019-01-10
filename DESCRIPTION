@@ -31,12 +31,15 @@ Depends: R (>= 3.4.0)
 Suggests:
   ape,
   bookdown,
+  CongreveLamsdell2016,
   knitr,
   Quartet,
   Rdpack,
   rmarkdown,
   testthat,
   usethis
+Remotes:
+  ms609/CongreveLamsdell2016
 RdMacros: Rdpack
 LazyData: true
 ByteCompile: true
