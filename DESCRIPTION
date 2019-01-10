@@ -31,7 +31,9 @@ Depends: R (>= 3.4.0)
 Suggests:
   ape,
   bookdown,
+  knitr,
   Quartet,
+  Rdpack,
   rmarkdown,
   testthat,
   usethis
