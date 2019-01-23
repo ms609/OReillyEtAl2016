@@ -5,12 +5,14 @@ citEntry(entry = "article",
         author = personList(as.person("Martin R. Smith")),
         title = "Bayesian and parsimony approaches reconstruct informative trees from simulated morphological datasets",
         year = "2019",
+        volume = "15",
+        pages = "20180632",
 
         textVersion =
         paste0("Smith, M. R. (2019). Bayesian and parsimony approaches reconstruct ",
                "informative trees from simulated morphological datasets. ",
-               "Biology Letters, in production. Prepreint at BioRxiv, ",
-               "doi: 10.1101/227942"))
+               "Biology Letters, 15:20180632. ",
+               "doi: 10.1098/rsbl.2018.0632"))
 
 citEntry(entry="article",
   author = personList(as.person("Joseph E. O'Reilly"), as.person("Mark N. Puttick"),
